@@ -124,37 +124,56 @@ def greedy_split_to_cube_packs_raw(trees, tree_count, feature_count):
                 cuts[f].add(c)
         all_cuts.append(cuts)
         all_trees.append(used_trees)
-    return all_cuts, all_trees, compute_cubes_size(all_cuts)
+    return all_cuts, all_trees, compute_cubes_size(all_cuts), "greedy"
 
 
-def greedy_split_to_cube_packs_varianted(mx, tree_count):
+def split_to_cube_packs_varianted(mx, tree_count, step=1):
     trees = extract_trees(mx)
     result = []
-    for i in xrange(len(trees)):
-        print "current iteration: {}".format(i)
-        result.append(greedy_split_to_cube_packs_raw(trees[:i + 1], tree_count, len(mx.features)))
+    print "step", step
+    for i in xrange(0, len(trees) + 1, step):
+        if i < tree_count:
+            continue
+        print "tree iteration: ", i
+        result.append([
+            greedy_split_to_cube_packs_raw(trees[:i], tree_count, len(mx.features)),
+            random_split_to_cube_packs_raw(trees[:i], tree_count, len(mx.features), 10, True),
+            random_split_to_cube_packs_raw(trees[:i], tree_count, len(mx.features), 10, False)
+        ])
     return result
 
 
-def random_split_to_cube_packs(mx, tree_count, attempts=10):
+def random_split_to_cube_packs(mx, tree_count, attempts=10, choose_best=True):
     trees = []
     for _, _, iterator in mx.iterate_trees():
         for features, cuts, leafs in iterator:
             trees.append((features, cuts, leafs))
+    return random_split_to_cube_packs(trees, tree_count, len(mx.features), attempts, choose_best)
+
+
+def random_split_to_cube_packs_raw(trees, tree_count, feature_count, attempts=10, choose_best=True):
     best_cubes = None
     best_size = None
     for attempt in xrange(attempts):
         initial_indicies = random.sample(range(len(trees)), tree_count)
-        used = [False for _ in trees]
+        not_used_trees = set(xrange(len(trees)))
         for i in initial_indicies:
-            used[i] = True
+            not_used_trees.remove(i)
         cubes = [[i] for i in initial_indicies]
         for i in xrange(len(trees) - tree_count):
             best_candidate = (None, None)
             lowest_increase = None
-            for candidate in xrange(len(trees)):
-                if used[candidate]:
-                    continue
+            if choose_best:
+                for candidate in not_used_trees:
+                    for c in xrange(len(cubes)):
+                        current_size = compute_raw_cube_size(trees, cubes[c])
+                        possible_size = compute_raw_cube_size(trees, cubes[c] + [i])
+                        increase = possible_size - current_size
+                        if lowest_increase is None or lowest_increase > increase:
+                            best_candidate = (candidate, c)
+                            lowest_increase = increase
+            else:
+                candidate = random.sample(not_used_trees, 1)[0]
                 for c in xrange(len(cubes)):
                     current_size = compute_raw_cube_size(trees, cubes[c])
                     possible_size = compute_raw_cube_size(trees, cubes[c] + [i])
@@ -162,7 +181,7 @@ def random_split_to_cube_packs(mx, tree_count, attempts=10):
                     if lowest_increase is None or lowest_increase > increase:
                         best_candidate = (candidate, c)
                         lowest_increase = increase
-            used[best_candidate[0]] = True
+            not_used_trees.remove(best_candidate[0])
             cubes[best_candidate[1]].append(best_candidate[0])
 
         current_size = 0
@@ -171,11 +190,11 @@ def random_split_to_cube_packs(mx, tree_count, attempts=10):
         if best_size is None or current_size < best_size:
             best_size = current_size
             best_cubes = cubes
-        print "iteration: {}, size: {}".format(attempt, best_size)
+        # print "iteration: {}, size: {}".format(attempt, best_size)
     all_cuts = []
     all_trees = []
     for cube in best_cubes:
-        cuts = [set() for _ in xrange(len(mx.features))]
+        cuts = [set() for _ in xrange(feature_count)]
         used_trees = []
         for i in cube:
             used_trees.append(trees[i])
@@ -184,7 +203,10 @@ def random_split_to_cube_packs(mx, tree_count, attempts=10):
                 cuts[f].add(c)
         all_cuts.append(cuts)
         all_trees.append(used_trees)
-    return all_cuts, all_trees, compute_cubes_size(all_cuts)
+    name = "random"
+    if choose_best:
+        name += "-best"
+    return all_cuts, all_trees, compute_cubes_size(all_cuts), name
 
 
 def split_to_cube_packs(mx, max_tree_size):
@@ -277,11 +299,15 @@ def write_cube_to_stream(cube, trees, bias, out_stream, threshold):
             out_stream.write(str(q) + " " + str(int(pred * divider)) + "\n")
 
 
-def build_cubes(mxs, qualities, tree_count):
+def build_cubes(mxs, qualities, tree_count, step):
     results = []
+    i = 0
     for mx, quals in zip(mxs, qualities):
-        for t, q in zip(greedy_split_to_cube_packs_varianted(mx, tree_count), quals):
-            results.append(tuple(list(t) + [q]))
+        i += 1
+        print "number: ", i
+        for t, q in zip(split_to_cube_packs_varianted(mx, tree_count, step), quals):
+            for v in t:
+                results.append(tuple(list(v) + [q]))
     results.sort(key=lambda x: x[2])
     return results
 
@@ -290,6 +316,6 @@ def clean_cubes(cube_results):
     cube_results.sort(key=lambda x: x[2])
     clean_results = []
     for result in cube_results:
-        if len(clean_results) == 0 or clean_results[-1][3] < result[3]:
+        if len(clean_results) == 0 or clean_results[-1][4] < result[4]:
             clean_results.append(result)
     return clean_results
