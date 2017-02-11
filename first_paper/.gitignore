@@ -1,0 +1,6 @@
+*.out
+*.tex
+*.xml
+*.bcf
+*.log
+*.aux

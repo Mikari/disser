@@ -32,7 +32,7 @@ MEXT = md
 SRC = $(wildcard *.$(MEXT))
 
 ## Location of Pandoc support files.
-PREFIX = /Users/mikari/.pandoc
+PREFIX = $(HOME)/.pandoc
 
 ## Location of your working bibliography file
 # BIB = /Users/anaderi/Documents/bibs/socbib-pandoc.bib
@@ -46,6 +46,8 @@ PDFS=$(SRC:.md=.pdf)
 HTML=$(SRC:.md=.html)
 TEX=$(SRC:.md=.tex)
 
+help:
+	echo $(HOME)
 
 html:	clean $(HTML)
 
@@ -67,12 +69,16 @@ all:	$(PDFS) $(HTML) $(TEX)
      # --filter-pandoc-citeproc-preamble \
 
 %.tex:	%.md
-	pandoc -r markdown+simple_tables+table_captions+yaml_metadata_block -w latex -s -S --latex-engine=pdflatex --template=$(PREFIX)/templates/latex.template --filter pandoc-crossref --filter pandoc-citeproc --filter pandoc-citeproc-preamble --csl=$(PREFIX)/csl/ajps.csl --bibliography=$(BIB) -o $@ $<
+	pandoc -r markdown+simple_tables+table_captions+yaml_metadata_block -w latex -s -S \
+	--latex-engine=xelatex --template=$(PREFIX)/templates/latex.template \
+	--filter pandoc-crossref --filter pandoc-citeproc \
+	--csl=$(PREFIX)/csl/ajps.csl --bibliography=$(BIB) -o $@ $<
+#	--filter pandoc-citeproc-preamble \
 
 
 %.pdf:	%.md
 	pandoc -r markdown+simple_tables+table_captions+yaml_metadata_block -s -S \
-	--latex-engine=pdflatex --template=$(PREFIX)/templates/latex.template \
+	--latex-engine=xelatex --template=$(PREFIX)/templates/latex.template \
 	--filter pandoc-crossref --filter pandoc-citeproc \
 	--bibliography=$(BIB)	\
 	--csl=$(PREFIX)/csl/$(CSL).csl -o $@ $<
