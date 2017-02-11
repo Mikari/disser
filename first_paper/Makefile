@@ -30,6 +30,7 @@ MEXT = md
 
 ## All markdown files in the working directory
 SRC = $(wildcard *.$(MEXT))
+SRC = raw_paper.md
 
 ## Location of Pandoc support files.
 PREFIX = $(HOME)/.pandoc
@@ -49,7 +50,7 @@ TEX=$(SRC:.md=.tex)
 help:
 	echo $(HOME)
 
-html:	clean $(HTML)
+html:	$(HTML)
 
 view: $(HTML)
 	open $(HTML)
