@@ -71,7 +71,7 @@ all:	$(PDFS) $(HTML) $(TEX)
 
 %.tex:	%.md
 	pandoc -r markdown+simple_tables+table_captions+yaml_metadata_block -w latex -s -S \
-	--latex-engine=xelatex --template=$(PREFIX)/templates/latex.template \
+	--latex-engine=pdflatex --template=latex.template \
 	--filter pandoc-crossref --filter pandoc-citeproc \
 	--csl=$(PREFIX)/csl/ajps.csl --bibliography=$(BIB) -o $@ $<
 #	--filter pandoc-citeproc-preamble \
@@ -79,7 +79,7 @@ all:	$(PDFS) $(HTML) $(TEX)
 
 %.pdf:	%.md
 	pandoc -r markdown+simple_tables+table_captions+yaml_metadata_block -s -S \
-	--latex-engine=xelatex --template=$(PREFIX)/templates/latex.template \
+	--latex-engine=pdflatex --template=latex.template \
 	--filter pandoc-crossref --filter pandoc-citeproc \
 	--bibliography=$(BIB)	\
 	--csl=$(PREFIX)/csl/$(CSL).csl -o $@ $<
