@@ -30,7 +30,7 @@ MEXT = md
 
 ## All markdown files in the working directory
 SRC = $(wildcard *.$(MEXT))
-SRC = raw_paper.md
+SRC = raw_paper.md eng_paper.md
 
 ## Location of Pandoc support files.
 PREFIX = $(HOME)/.pandoc
