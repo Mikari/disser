@@ -1,11 +1,11 @@
-This is XeTeX, Version 3.14159265-2.6-0.99996 (TeX Live 2016) (preloaded format=xelatex 2017.1.16)  6 NOV 2017 19:47
+This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015) (preloaded format=xelatex 2016.5.3)  9 NOV 2017 23:18
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **paper.tex
 (./paper.tex
-LaTeX2e <2016/03/31>
-Babel <3.9r> and hyphenation patterns for 83 language(s) loaded.
+LaTeX2e <2015/01/01>
+Babel <3.9l> and hyphenation patterns for 79 languages loaded.
 (./jpconf.cls
 Document Class: jpconf 2007/03/07 v1.1 LaTeX class for Journal of Physics: Conf
 erence Series
@@ -27,38 +27,32 @@ File: jpconf11.clo 2005/05/04 v1.0 LaTeX2e file (size option)
 \bibindent=\dimen103
 \c@eqnval=\count87
 )
-(/usr/local/texlive/2016/texmf-dist/tex/latex/graphics/graphicx.sty
+(/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/graphicx.sty
 Package: graphicx 2014/10/28 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
 
-(/usr/local/texlive/2016/texmf-dist/tex/latex/graphics/keyval.sty
+(/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/keyval.sty
 Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
 \KV@toks@=\toks14
 )
-(/usr/local/texlive/2016/texmf-dist/tex/latex/graphics/graphics.sty
-Package: graphics 2016/05/09 v1.0r Standard LaTeX Graphics (DPC,SPQR)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2014/10/28 v1.0p Standard LaTeX Graphics (DPC,SPQR)
 
-(/usr/local/texlive/2016/texmf-dist/tex/latex/graphics/trig.sty
-Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
 )
-(/usr/local/texlive/2016/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
-File: graphics.cfg 2016/01/02 v1.10 sample graphics configuration
+(/usr/local/texlive/2015/texmf-dist/tex/latex/latexconfig/graphics.cfg
+File: graphics.cfg 2010/04/23 v1.9 graphics configuration of TeX Live
 )
-Package graphics Info: Driver file: xetex.def on input line 96.
+Package graphics Info: Driver file: xetex.def on input line 94.
 
-(/usr/local/texlive/2016/texmf-dist/tex/xelatex/xetex-def/xetex.def
-File: xetex.def 2016/04/06 v4.08 LaTeX color/graphics driver for XeTeX (TeX Liv
+(/usr/local/texlive/2015/texmf-dist/tex/xelatex/xetex-def/xetex.def
+File: xetex.def 2015/03/25 v4.04 LaTeX color/graphics driver for XeTeX (TeX Liv
 e/RRM/JK)
-
-(/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/infwarerr.sty
-Package: infwarerr 2016/05/16 v1.4 Providing info/warning/error messages (HO)
-)
-(/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
-Package: ltxcmds 2016/05/16 v1.23 LaTeX kernel commands for general use (HO)
-)))
+))
 \Gin@req@height=\dimen104
 \Gin@req@width=\dimen105
 )
-No file paper.aux.
+(./paper.aux)
 \openout1 = `paper.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 3.
@@ -74,6 +68,7 @@ LaTeX Font Info:    ... okay on input line 3.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 3.
 LaTeX Font Info:    ... okay on input line 3.
 
+
 LaTeX Font Warning: Font shape `OT1/cmr/m/n' in size <18.06749> not available
 (Font)              size <17.28> substituted on input line 4.
 
@@ -82,11 +77,15 @@ LaTeX Font Warning: Font shape `OT1/cmr/bx/n' in size <18.06749> not available
 (Font)              size <17.28> substituted on input line 4.
 
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <10.95> on input line 27.
+(Font)              <10.95> on input line 10.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 27.
+(Font)              <8> on input line 10.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 27.
+(Font)              <6> on input line 10.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <9> on input line 12.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 12.
 [1
 
 ] [2] [3]
@@ -125,12 +124,12 @@ LaTeX Font Warning: Size substitutions with differences
 
  ) 
 Here is how much of TeX's memory you used:
- 955 strings out of 493591
- 10709 string characters out of 6143546
- 69331 words of memory out of 5000000
- 4412 multiletter control sequences out of 15000+600000
- 8412 words of font info for 30 fonts, out of 8000000 for 9000
- 1347 hyphenation exceptions out of 8191
- 27i,5n,19p,830b,164s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 774 strings out of 493706
+ 7896 string characters out of 6145770
+ 67638 words of memory out of 5000000
+ 4168 multiletter control sequences out of 15000+600000
+ 9025 words of font info for 32 fonts, out of 8000000 for 9000
+ 1328 hyphenation exceptions out of 8191
+ 25i,4n,19p,915b,170s stack positions out of 5000i,500n,10000p,200000b,80000s
 
 Output written on paper.pdf (5 pages).

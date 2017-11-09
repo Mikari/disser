@@ -1,26 +1,31 @@
 \documentclass[a4paper]{jpconf}
 \usepackage{graphicx}
 \begin{document}
-\title{Some Title}
+\title{Speeding up prediction performance of the BDT-based models}
 
-\author{Egor Khairullin, Andrey Ustuzhanin}
-
+\author{
+ E. Khairullin$^{1, 3}$
+ and
+ A. Ustyuzhanin$^{1, 2, 3}$
+}
 % \address{Production Editor, \jpcs, \iopp, Dirac House, Temple Back, Bristol BS1~6BE, UK}
+\address{$^{1}$ Moscow Institute of Physics and Technology}
+\address{$^{2}$ National Research University Higher School of Economics, 20 Myasnitskaya st., Moscow 101000, Russia}
+\address{$^{3}$ Yandex School of Data Analysis, 11/2, Timura Frunze st., Moscow 119021, Russia}
 
 \ead{mikari@yandex-team.ru, anaderi@yandex-team.ru}
 
 \begin{abstract}
-The result of many machine learning algorithms are computational complex models. And further growth in the quality of the such models usually leads to a deterioration in the applying times. However, such high quality models are desirable to be used in the conditions of limited resources (memory or cpu time).
-This article discusses how to trade the quality of the model for the speed of its applying a novel boosted trees algorithm called Catboost. The idea is to combine two approaches: training fewer trees and uniting trees into huge cubes. The proposed method allows for pareto-optimal reduction of the computational complexity of the decision tree model with regard to the quality of the model. In the considered example number of lookups was decreased from 5000 to only 6 (speedup factor of 1000) while AUC score of the model was reduced by less than per mil.
+The outcome of a machine learning algorithm is a prediction model. It is quite usual such models are computationaly expensive and growth of the quality of such models leads to the deterioration in the inference speed. However it is not always tradeoff between quality vs speed. In this paper we show it is possible to speed up model by using additional memory without loosing prediction quality significantly for a novel boosted trees algorithm called Catboost. The idea is to combine two approaches: training fewer trees and merging trees into kind of hash maps (DecisionTensors). The proposed method allows for pareto-optimal reduction of the computational complexity of the decision tree model with regard to the quality of the model. In the considered example number of lookups was decreased from 5000 to only 6 (speedup factor of 1000) while AUC score of the model was reduced by less than per mil.
 \end{abstract}
 
 \section{Introduction}
-Today, Machine Learning (ML) is used in various fields ranging from information search in the Internet and speech recognition to optimization of the steel composition and the search for new physics.
-In almost all cases, resources (memory, CPU, network, etc.) are very limited to solve the task.
+Today, Machine Learning (ML) approach is used in various fields ranging from the information retrieval in the Internet and speech recognition to optimization of the steel composition and the search for the New Physics.
+The resources (memory, CPU, network, etc.) are very limited to solve the task in production settings.
 
-For the most ML algorithms, improving the quality of the model usually leads to higher levels of resource consumption. For example, with the use tree-based boosting algorithms, increasing the number of trees from tens to thousands usually leads to a significant increase in quality, while increasing the load on memory and CPU when applying such a model. Increased requirements on the hardware resources of more accurate models is usually solved by various technical optimizations of storage and application of the resulting model: for example, using vector calculations. Another approach is the modification of the learning process, withch makes it possible to obtain models with certain properties that make it possible to signigicantly accelerate their application without maintaining the required level of quality.
+For the most of the ML algorithms, improving the quality of the model usually leads to a higher levels of resource consumption. For example, with the use tree-based boosting algorithms, the increase of the number of trees from tens to thousands usually leads to the significant increase in the quality and at the same time the model size and inference time also amplify. The higher demands for the hardware resources for the more accurate models are usually solved by various technical optimizations model storage mechanism. For example vectoriation of the tree weights storage can be used. Another approach is the modification of the learning process that makes it possible to obtain models with certain properties that make it possible to signigicantly accelerate their application without maintaining the required level of quality.
 
-In this paper, we consider the modification of the learning process of predictive models by the algorithm CatBoost [1], which will accelerate the apply of the model while maintaining the required level of quality.
+In this paper, we consider the modification of the learning process of predictive models by the boost decision tree-based algorithm CatBoost [1]. Such modification will accelerate the prediction time of the model while maintaining the required level of the quality.
 
 \section{CatBoost}
 
