@@ -93,7 +93,7 @@ In general, this is not an easy task and it requires a separate study. We used t
 \item Combine it with the most similar tensor
 \item Repeat steps 2-3 until there are no unused trees left.
 \end{enumerate}
-Such reduction of the set of trees to a set of Tensors we call partitioning. 
+Such reduction of the set of trees to a set of Tensors we call partitioning.
 (TODO: what is rough and what is detailed partition?)
 
 \section{A complete algorithm for constructing an Decision Tensors Ensemble with the help of CatBoost}
@@ -128,20 +128,55 @@ This algorithm allows to find the Pareto-optimal ensemble of Decision Tensors.
 
 \section{Real problem illustration}
 
-We have used the dataset and the model from [@ likhomanenko2015lhcb]. Number of features in the dataset is 10, the model was trained on 5000 trees with a number of the buckets 64. We compared our algorithm for constructing Decision Tensors Ensemble with trivial approach: training a small number of trees but with high value of the training speed.
+We have used the dataset and the model from [2]. Number of features in the dataset is 10, the model was trained on 5000 trees with a number of the buckets 64. We compared our algorithm for constructing Decision Tensors Ensemble with trivial approach: training a small number of trees but with high value of the training speed.
 For this we divided the data set into three parts: training (50\%), test (25\%) and validation (25\%). We trained the models on the training sample, then used the test for the selection of the best models under given constraints.
 
 We have limited the number of tensor by 6 and the total size of models by one gigabyte, so every prediction requires 4 bytes (float). We have scanned only through the key CatBoost hyperparameters: number of trees and the learing rate.
 
-The figure of merit we've taken also from [@_likhomanenko2015lhcb], which is the area under the ROC curve where False Positive Rate less than 0.05. For the convenience, we have normalized this metric so that its maximum value (with an ideal model) is equal to 1.
+The figure of merit we've taken also from [2], which is the area under the ROC curve where False Positive Rate less than 0.05. For the convenience, we have normalized this metric so that its maximum value (with an ideal model) is equal to 1.
 
 \section{Discussion}
 
 We compared the CatBoost model with 5000 trees ("best"), the fast CatBoost models for 1-125 trees ("fast") and the Decision Tensors Ensembles (DTE) with different memory limits and different tensors numbers.
 
-Figure 1 shows the dependence of the quality on the number of lookups. Chart 2 shows the dependence of the quality vs the total inference time at the full validation dataset. Table 3 shows properties of the models trained in the process.
+Figure 1 shows the dependence of the quality on the number of lookups. Figure 2 shows the dependence of the quality vs the total inference time at the full validation dataset. Table 1 shows properties of the models trained in the process.
 
-TODO: добавить графики из презентации
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.8\textwidth]{"lookups.png"}
+\caption{Lookups count versus FOM for different models sizes}
+\end{center}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.8\textwidth]{"times.png"}
+\caption{Application time versus FOM for different models sizes}
+\end{center}
+\end{figure}
+
+\begin{table}[h]
+\caption{\label{tabone}Properties of the some models trained in the process}
+
+\begin{center}
+\lineup
+\begin{tabular}{*{4}{l}}
+\br
+Model & Roc & Time, ms & Size, Mb \cr
+\mr
+catboost-5000 & $0.6004$ & $10000$ & $<5$ \cr
+catboost-100 & $0.589$ & $160$ & $<5$ \cr
+catboost-75 & $0.5808$ & $125$ & $<5$ \cr
+catboost-10 & $0.5336$ & $30$ & $<5$ \cr
+big dte-6 & $0.5952$ & $180$ & $1000$ \cr
+big dte-3 & $0.5938$ & $145$ & $1000$ \cr
+big dte-2 & $0.5844$ & $70$ & $1000$ \cr
+small dte-2 & $0.5794$ & $55$ & $150$ \cr
+dte-1 & $0.5618$ & $30$ & $150$ \cr
+\br
+\end{tabular}
+\end{center}
+\end{table}
 
 It can be seen that at a comparable quality with "fast" models, DTE allows a 25 times reduction in the number of lookups. And in comparison with the "best" model, the number of lookups is 1000 times smaller with a small loss in quality ($ <0.006 $ with the "best" quality of 0.6).
 
