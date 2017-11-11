@@ -25,7 +25,8 @@ The resources (memory, CPU, network etc.) are very limited to solve the task in 
 
 For the most of the ML algorithms, improving the quality of the model usually leads to a higher levels of resource consumption. For example, when using tree-based boosting algorithms, the increase of the number of trees from tens to thousands usually leads to significant increase in the quality and at the same time the model size and inference time also grow. Higher demands for the computational resources of the more accurate models are usually solved by various technical optimizations model storage mechanism. For example vectorisation of the tree weights storage can be used. Another approach is the modification of the training process that makes it possible to obtain models with certain properties that will provide acceleration to their application without maintaining the required level of quality.
 
-In this paper, we consider a modification of the training process of a predictive models by decision tree-based algorithm CatBoost [1] (TODO: 13).
+In this paper, we consider a modification of the training process of a predictive models by decision tree-based algorithm CatBoost [1]. But our approach is applicable to other boosting decision tree-based algorithms.
+
 \section{CatBoost}
 
 CatBoost is the implementation of a tree-based gradient boosting in which oblivious decision trees are used. The values of each feature $i$ are discretized into baskets using the boundaries $B_i={b_{i1},...,b_{ip_i}}$, where $p_i$ is the number of boundaries. The boundaries themselves are determined in advance using various approaches.
@@ -33,14 +34,16 @@ Original feature vector with real values is replaced by a vector of binary value
 
 Number of baskets used for the discretization could be controlled by specifying the appropriate parameter during the training procedure.
 
-Let's consider another important training characteristic, namely the learning rate. The smaller it is, the smaller the contribution of each next tree in the ensemble. However, this has to be compensated by a large number of trees. The learning rate can be chosen by the cross-validation process given the fixed number of trees. Usually, the more trees the higher the model quality. (TODO: add conclusion)
+Let's consider another important training characteristic, namely the learning rate. The smaller it is, the smaller the contribution of each next tree in the ensemble. However, this has to be compensated by a large number of trees and vice versa. The learning rate can be chosen by the cross-validation process given the fixed number of trees. Usually, the more trees the higher the model quality.
+
+With default parameters CatBoost shows already good enough quality, so we variate only number of trees (and learning rate to compensate) because number of trees affects time. For other parameters was choosen default values.
 
 \section{Decision Tensor}
 One of the simplest ways to accelerate computational performance is the preliminary calculation. The feature vector obtained after the discretization takes a limited number of values. Therefore, we can precompute the predictions for all possible values combination.
 
 Let $n$ be the number of features. Let us consider some model $Z$, trained by some algorithm, containing a set of trees $T$. For convenience, we assume that the values of every feature belongs to the interval $[0;1]$. In other words, every feature vectors lies in n-dimensional cube $[0;1]$.
 
-Let $B_i$ be the a of basket boundaries for the $i$-th feature, which was used in $T$. Then we can split the hyper-cube $[0;1]$ into small hyper-parallelepipeds. The prediction of the model is constant within each hyperparallelepiped. In fact, the model $Z$ allows you to calculate the value at any point of our hypercube. if we pre-calculate the value for each piece, then we will accelerate the application of our model, effectively reducing it to the time required to search a piece that contains the point. We called such approach a Decision Tensor. The asymptotic complexity of the application of the tree-based mode it $\mathcal(h\cdot t)$ where $h$ is the height of the trees, $t$ is the total number of the trees. Asymptotic complexity of Tensor is $\mathcal(n\cdot \log(b))$ where $n$ is the number of the features and $b$ is the number of cuts per feature (this complexity is estimated by using binary search). It should be noted for small $b$ simple linear search could be a bit faster that binary. So, with a small number of features the Tensor-based prediction can be computed much faster than usual tree-based model (TODO: 37)
+Let $B_i$ be the a of basket boundaries for the $i$-th feature, which was used in $T$. Then we can split the hyper-cube $[0;1]$ into small hyper-parallelepipeds. The prediction of the model is constant within each hyperparallelepiped. In fact, the model $Z$ allows you to calculate the value at any point of our hypercube. if we pre-calculate the value for each piece, then we will accelerate the application of our model, effectively reducing it to the time required to search a piece that contains the point. We called such approach a Decision Tensor. The asymptotic complexity of the application of the tree-based mode it $\mathcal(h\cdot t)$ where $h$ is the height of the trees, $t$ is the total number of the trees. Asymptotic complexity of Tensor is $\mathcal(n\cdot \log(b))$ where $n$ is the number of the features and $b$ is the number of cuts per feature (this complexity is estimated by using binary search). It should be noted for small $b$ simple linear search could be a bit faster that binary. So, with a small number of features the Tensor-based prediction may be computed much faster than tree-based model.
 
 However, Decision Tensor has larger memory footprint. It needs $O(b^n)$ bytes of memory and it may be too large for common computer. Therefore, the precomputed tensor can only be used for small $b$ and $n$.
 
@@ -56,21 +59,21 @@ Consider the case for small $n$. We can get a small $b$ in two main ways: limit 
 
 The first method was used in [2]: there a trained MatrixNet (ancestor of CatBoost) model with a small number of cuts that has been precomputed into a Decision Tensor.
 
-The consumption of memory for a single hypercube can be extremely huge provided that acceptable quality is achieved, so the natural extension of the idea is the construction of Decision Tensors ensemble. (TODO: 45)
+The consumption of memory for a single tensor can be extremely huge provided that acceptable quality is achieved, so the natural extension of the idea is the construction of Decision Tensors ensemble but with some deterioration of applying time.
 
 \section{Tensor Similarity}
 Let's introduce the metric for the similarity of two tensors. Suppose, we have two tensors: $D^1 = (B^{1}_{1}, ..., B^{1}_{n})$ and $D^2 = (B^{2}_{1}, ..., B^{2}_{n})$. Their sum $D^u = D^1 + D^2$ could be defined as $D^u = (f^{u}_{1}, ..., f^{u}_{f})$, where $f^{u}_{i} = f^{1}_{i} \cup f^{2}_{i}$. Now, let's define similarity as the difference between the sum of their sizes and the size of their union:
 
 $$Sim(D^1, D^2) = S(D^1) + S(D^2) - S(D^1 + D^2)$$
 
-\section{Multicriteria optimization}
-(TODO - probably should be removed)
-The target metrics are $ Q $ (model quality), $ S $ (size), and $ t $ (time of inference). However, we can assume that the inference time is proportional to the number of decision tensors $ M $.
-The input feature vectors will define the algorithm for obtaining the trees and the algorithm for combining them into the Tensors. We denote single vector by $ v $ and let $V$ be the set of all input vectors. Then we need to solve the following problem:
+% \section{Multicriteria optimization}
+% (TODO - probably should be removed)
+% The target metrics are $ Q $ (model quality), $ S $ (size), and $ t $ (time of inference). However, we can assume that the inference time is proportional to the number of decision tensors $ M $.
+% The input feature vectors will define the algorithm for obtaining the trees and the algorithm for combining them into the Tensors. We denote single vector by $ v $ and let $V$ be the set of all input vectors. Then we need to solve the following problem:
 
-$$min(Q(V), S(V), M(V)), v \in V$$
+% $$min(Q(V), S(V), M(V)), v \in V$$
 
-It should be noted that for practical application this problem can be solved using the constrained optimization method. But in practice there are quite strict limitations on the size of the model and the available application time (TODO - what did you mean?).
+% It should be noted that for practical application this problem can be solved using the constrained optimization method. But in practice there are quite strict limitations on the size of the model and the available application time (TODO - what did you mean?).
 
 \section{Algorithm for combining set of Decision Trees to a set of Decision Tensors}
 
