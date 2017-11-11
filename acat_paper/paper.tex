@@ -64,7 +64,7 @@ The first method was used in [2]: there a trained MatrixNet (ancestor of CatBoos
 The consumption of memory for a single tensor can be extremely huge provided that acceptable quality is achieved, so the natural extension of the idea is the construction of Decision Tensors ensemble but with some deterioration of applying time.
 
 \section{Tensor Similarity}
-Let's introduce the metric for the similarity of two tensors. Suppose, we have two tensors: $D^1 = (B^{1}_{1}, ..., B^{1}_{n})$ and $D^2 = (B^{2}_{1}, ..., B^{2}_{n})$. Their sum $D^u = D^1 + D^2$ could be defined as $D^u = (f^{u}_{1}, ..., f^{u}_{f})$, where $f^{u}_{i} = f^{1}_{i} \cup f^{2}_{i}$. Now, let's define similarity as the difference between the sum of their sizes and the size of their union:
+Let's introduce the metric for the similarity of two tensors. Suppose, we have two tensors: $D^1 = (B^{1}_{1}, ..., B^{1}_{n})$ and $D^2 = (B^{2}_{1}, ..., B^{2}_{n})$. The sum $D^u = D^1 + D^2$ could be defined as $D^u = (f^{u}_{1}, ..., f^{u}_{f})$, where $f^{u}_{i} = f^{1}_{i} \cup f^{2}_{i}$. Now, let's define similarity as the difference between the sum of their sizes and the size of their union:
 
 $$Sim(D^1, D^2) = S(D^1) + S(D^2) - S(D^1 + D^2)$$
 
