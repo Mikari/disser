@@ -6,14 +6,13 @@
 \author{
  E. Khairullin$^{1, 3}$
  and
- A. Ustyuzhanin$^{1, 2, 3}$
+ A. Ustyuzhanin$^{2, 3}$
 }
-% \address{Production Editor, \jpcs, \iopp, Dirac House, Temple Back, Bristol BS1~6BE, UK}
-\address{$^{1}$ Moscow Institute of Physics and Technology}
+\address{$^{1}$ Moscow Institute of Physics and Technology, Institutskiy per. 9, Dolgoprudny, Moscow Region, 141700, Russia}
 \address{$^{2}$ National Research University Higher School of Economics, 20 Myasnitskaya st., Moscow 101000, Russia}
 \address{$^{3}$ Yandex School of Data Analysis, 11/2, Timura Frunze st., Moscow 119021, Russia}
 
-\ead{mikari@yandex-team.ru, anaderi@yandex-team.ru}
+\ead{mikari@yandex-team.ru}
 
 \begin{abstract}
 The outcome of a machine learning algorithm is a prediction model. It is quite usual such models are computationaly expensive and growth of the quality of such models leads to the deterioration in the inference speed. However it is not always tradeoff between quality vs speed. In this paper we show it is possible to speed up model by using additional memory without loosing prediction quality significantly for a novel boosted trees algorithm called CatBoost. The idea is to combine two approaches: training fewer trees and merging trees into kind of hash maps (DecisionTensors). The proposed method allows for pareto-optimal reduction of the computational complexity of the decision tree model with regard to the quality of the model. In the considered example number of lookups was decreased from 5000 to only 6 (speedup factor of 1000) while AUC score of the model was reduced by less than per mil.
@@ -186,10 +185,10 @@ In addition, the use of the Ensemble can significantly improve the model quality
 
 \section*{References}
 \numrefs{99}
-\item Gulin A, Kuralenok I, Pavlov D 2011 {\it Winning The Transfer Learning Track of Yahoo!'s Learning To Rank Challenge with YetiRank.} (Yahoo! Learning to Rank Challenge) p 63--76
-\item Likhomanenko T, Ilten P, Khairullin E, Rogozhnikov A, Ustyuzhanin A, Williams M 2015 {\it LHCb Topological Trigger Reoptimization} (Journal of Physics: Conference Series)
-\item Dorogush A V, Gulin A, Gusev G, Kazeev N, Ostroumova Prokhorenkova L, Vorobev A {\it Fighting biases with dynamic boosting.} ([arXiv:1706.09516])
-\item Gligorov V, Williams M 2013 {\it Efficient, reliable and fast high-level triggering using a bonsai boosted decision tree} (JINST 8 P02013 [arXiv:1210.6861])
+\item Gulin A, Kuralenok I, Pavlov D 2011 Winning The Transfer Learning Track of Yahoo!'s Learning To Rank Challenge with YetiRank {\it Yahoo! Learning to Rank Challenge} p 63--76
+\item Likhomanenko T, Ilten P, Khairullin E, Rogozhnikov A, Ustyuzhanin A, Williams M 2015 LHCb Topological Trigger Reoptimization (IOP Publishing) {\it Journal of Physics: Conference Series} Vol. 664, No. 8, p. 082025
+\item Dorogush A, Gulin A Gusev G Kazeev N Ostroumova L Vorobev A Fighting biases with dynamic boosting arXiv:1706.09516
+\item Gligorov V, Williams M 2013 Efficient, reliable and fast high-level triggering using a bonsai boosted decision tree {\it Journal of Instrumentation} 8 P02013
 \endnumrefs
 
 \end{document}
